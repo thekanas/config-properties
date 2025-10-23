@@ -1,0 +1,31 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, beans, health, prometheus, gateway
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      app: product-api
+  tracing:
+    sampling:
+      probability: 1.0
+    propagation:
+      type: w3c,b3
+    baggage:
+      remote-fields: correlation-id,user-id
+      correlation:
+        enabled: true
+  otlp:
+    tracing:
+      endpoint: ${OTLP_ENDPOINT:http://localhost:4318/v1/traces}
+
+resilience4j:
+  ratelimiter:
+    instances:
+      getProductLimiter:
+        limit-for-period: 10
+        limit-refresh-period: 5s
+        timeout-duration: 5s

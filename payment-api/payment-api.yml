@@ -1,0 +1,33 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER}
+    consumer:
+      group-id: payment-api-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+topics:
+  payment:
+    commands: payment.commands
+    replies: payment.replies
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, beans, health, prometheus, gateway
+  metrics:
+    export:
+      prometheus:
+        enabled: true
