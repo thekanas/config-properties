@@ -26,6 +26,28 @@ spring:
                       firstBackoff: 10ms
                       maxBackoff: 50ms
                       factor: 2
+            - id: discounts-api
+              uri: lb://discounts-api
+              predicates:
+                - Path=/discounts/**
+              metadata:
+                response-timeout: 500
+                connect-timeout: 200
+              filters:
+                - StripPrefix=1
+                - name: CircuitBreaker
+                  args:
+                    name: productApiCircuitBreaker
+                    fallbackUri: forward:/some-fallback
+                - name: Retry
+                  args:
+                    retries: 3
+                    statuses: BAD_GATEWAY
+                    methods: GET,POST
+                    backoff:
+                      firstBackoff: 10ms
+                      maxBackoff: 50ms
+                      factor: 2                      
           globalcors:
             cors-configurations:
               '[/**]':
