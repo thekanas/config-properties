@@ -26,10 +26,10 @@ spring:
                       firstBackoff: 10ms
                       maxBackoff: 50ms
                       factor: 2
-            - id: discounts-api
-              uri: lb://discounts-api
+            - id: discount-api
+              uri: lb://discount-api
               predicates:
-                - Path=/discounts/**
+                - Path=/discount/**
               metadata:
                 response-timeout: 500
                 connect-timeout: 200
