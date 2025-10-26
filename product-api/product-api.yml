@@ -29,3 +29,46 @@ resilience4j:
         limit-for-period: 10
         limit-refresh-period: 5s
         timeout-duration: 5s
+  circuitbreaker:
+    instances:
+      discountApiCircuitBreaker:
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000ms
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+  retry:
+    configs:
+      default:
+        maxAttempts: 2
+        waitDuration: 5s
+        retryExceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - java.util.concurrent.TimeoutException
+          - java.io.IOException
+    instances:
+      discountApiRetry:
+        maxAttempts: 3
+        waitDuration: 10s
+        retryExceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - java.util.concurrent.TimeoutException
+          - java.io.IOException
+        ignoreExceptions:
+          - java.lang.IllegalArgumentException
+  bulkhead:
+    configs:
+      default:
+        queueCapacity: 5
+    instances:
+      discountApiBulkhead:
+        maxConcurrentCalls: 10
+        maxWaitDuration: 500ms
+        queueCapacity: 10
+        
+feign:
+  client:
+    config:
+      discount-api:
+        connect-timeout: 1000
+        read-timeout: 3000
